@@ -1,0 +1,97 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package com.stuypulse.robot.subsystems;
+
+import com.stuypulse.robot.Constants;
+import com.stuypulse.robot.Constants.Constraints;
+import com.stuypulse.robot.Constants.Ports;
+import com.stuypulse.stuylib.control.Controller;
+import com.stuypulse.stuylib.control.feedback.PIDController;
+import com.stuypulse.stuylib.control.feedforward.Feedforward;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class Romi extends Robot {
+
+  private final Spark leftMotor = new Spark(Ports.LEFT_MOTOR);
+  private final Spark rightMotor = new Spark(Ports.RIGHT_MOTOR);
+
+  private final Controller leftController, rightController;
+  private double leftTargetSpeed, rightTargetSpeed;
+
+  private final Encoder leftEncoder = new Encoder(Ports.LEFT_GRAYHILL_A, Ports.LEFT_GRAYHILL_B);
+  private final Encoder rightEncoder = new Encoder(Ports.RIGHT_GRAYHILL_A, Ports.RIGHT_GRAYHILL_B);
+
+  private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(new Rotation2d(0));
+  private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.Encoder.TRACK_WIDTH_METERS);
+
+  /** Creates a new RomiDrivetrain. */
+  public Romi() {
+    // Use meters as unit for encoder distances
+    leftEncoder.setDistancePerPulse(Constants.Encoder.DISTANCE_PER_PULSE);
+    rightEncoder.setDistancePerPulse(Constants.Encoder.DISTANCE_PER_PULSE);
+    resetEncoders();
+
+    leftController = new Feedforward.Drivetrain(Constants.Feedforward.kS, Constants.Feedforward.kV, Constants.Feedforward.kA).position()
+      .add(new PIDController(Constants.Feedback.kP, Constants.Feedback.kI, Constants.Feedback.kD));
+
+    rightController = new Feedforward.Drivetrain(Constants.Feedforward.kS, Constants.Feedforward.kV, Constants.Feedforward.kA).position()
+      .add(new PIDController(Constants.Feedback.kP, Constants.Feedback.kI, Constants.Feedback.kD));
+
+    leftTargetSpeed = 0;
+    rightTargetSpeed = 0;
+
+    // Invert right side since motor is flipped
+    rightMotor.setInverted(true);
+  }
+
+  @Override
+  public void drive(double leftMetersPerSecond, double rightMetersPerSecond) {
+    leftTargetSpeed = leftMetersPerSecond;
+    rightTargetSpeed = rightMetersPerSecond;
+  }
+
+  public void resetEncoders() {
+    leftEncoder.reset();
+    rightEncoder.reset();
+  }
+
+  public double getLeftDistanceMeters() {
+    return leftEncoder.getDistance();
+  }
+
+  public double getRightDistanceMeters() {
+    return rightEncoder.getDistance();
+  }
+
+  @Override
+  public Pose2d getPose() {
+    return odometry.getPoseMeters();
+  }
+
+  @Override
+  public DifferentialDriveKinematics getKinematics() {
+    return kinematics;
+  }
+
+  @Override
+  public TrajectoryConfig getConstraints() {
+    return new TrajectoryConfig(Constraints.MAX_VEL_METERS_PER_SECOND, Constraints.MAX_ACCEL_METERS_PER_SECOND_SQ)
+      .setKinematics(kinematics);
+  }
+
+  @Override
+  public void periodic() {
+    leftMotor.set(leftController.update(leftTargetSpeed, leftEncoder.getRate()));
+    rightMotor.set(rightController.update(rightTargetSpeed, rightEncoder.getRate()));
+  }
+}
