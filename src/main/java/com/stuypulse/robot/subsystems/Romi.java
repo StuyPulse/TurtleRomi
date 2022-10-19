@@ -28,11 +28,12 @@ public class Romi extends Robot {
   private final Controller leftController, rightController;
   private double leftTargetSpeed, rightTargetSpeed;
 
-  private final Encoder leftEncoder = new Encoder(Ports.LEFT_GRAYHILL_A, Ports.LEFT_GRAYHILL_B);
-  private final Encoder rightEncoder = new Encoder(Ports.RIGHT_GRAYHILL_A, Ports.RIGHT_GRAYHILL_B);
 
-  private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(new Rotation2d(0));
-  private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.Encoder.TRACK_WIDTH_METERS);
+  private final Encoder leftEncoder = new Encoder(Ports.LEFT_ENCODER_A, Ports.LEFT_ENCODER_B);
+  private final Encoder rightEncoder = new Encoder(Ports.RIGHT_ENCODER_A, Ports.RIGHT_ENCODER_B);
+
+  private final DifferentialDriveOdometry odometry;
+  private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.TRACK_WIDTH_METERS);
 
   private final RomiGyro gyro = new RomiGyro();
 
@@ -55,6 +56,8 @@ public class Romi extends Robot {
 
     // Invert right side since motor is flipped
     rightMotor.setInverted(true);
+
+    odometry = new DifferentialDriveOdometry(getRotation2d());
   }
 
   @Override
