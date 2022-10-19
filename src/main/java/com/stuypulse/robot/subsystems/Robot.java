@@ -2,6 +2,7 @@ package com.stuypulse.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -15,24 +16,34 @@ import com.stuypulse.robot.commands.TurnDelta;
 
 public abstract class Robot extends SubsystemBase {
 
-	public abstract void drive(double leftMetersPerSecond, double rightMetersPerSecond);
-	public abstract void turn(double omega);
 	public abstract Pose2d getPose();
 	public abstract DifferentialDriveKinematics getKinematics();
-	public abstract TrajectoryConfig getConstraints();
-	public abstract double getGyroAngleDegrees();
+	public abstract Rotation2d getRotation2d();
 
-	public Command fd(double distance) {
+	public abstract void drive(double leftMetersPerSecond, double rightMetersPerSecond);
+	
+	public final void turn(double omega) {
+		var wheelSpeeds = getKinematics().toWheelSpeeds(new ChassisSpeeds(0, 0, omega));
+		drive(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
+	}
+
+	protected abstract TrajectoryConfig getTrajectoryConfig();
+
+	public final Command fd(double distance) {
 		return new FollowPath(this,
 			TrajectoryGenerator.generateTrajectory(
 				new Pose2d(0, 0, new Rotation2d(0)),
 				List.of(),
 				new Pose2d(distance, 0, new Rotation2d(0)),
-				getConstraints()));
+				getTrajectoryConfig()));
 	}
 
-	public Command rt(double degrees) {
-		return new TurnDelta(this, degrees);
+	public final Command rt(double degrees) {
+		return new TurnDelta(this, Rotation2d.fromDegrees(-degrees));
+	}
+
+	public final Command lt(double degrees) {
+		return new TurnDelta(this, Rotation2d.fromDegrees(+degrees));
 	}
 
 }
