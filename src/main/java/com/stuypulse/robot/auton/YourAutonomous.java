@@ -1,9 +1,9 @@
-package com.stuypulse.robot;
+package com.stuypulse.robot.auton;
 import com.stuypulse.robot.subsystems.Robot;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class ControlRobot extends SequentialCommandGroup {
-    public ControlRobot(Robot robot) {
+public class YourAutonomous extends SequentialCommandGroup {
+    public YourAutonomous(Robot robot) {
         addCommands(
 
             // Create a square
