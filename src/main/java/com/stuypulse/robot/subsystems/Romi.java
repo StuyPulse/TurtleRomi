@@ -41,12 +41,13 @@ public class Romi extends Robot {
     // Use meters as unit for encoder distances
     leftEncoder.setDistancePerPulse(Constants.Encoder.DISTANCE_PER_PULSE);
     rightEncoder.setDistancePerPulse(Constants.Encoder.DISTANCE_PER_PULSE);
-    resetEncoders();
+    leftEncoder.reset();
+    rightEncoder.reset();
 
-    leftController = new Feedforward.Drivetrain(Constants.Feedforward.kS, Constants.Feedforward.kV, Constants.Feedforward.kA).position()
+    leftController = new Feedforward.Drivetrain(Constants.Feedforward.kS, Constants.Feedforward.kV, Constants.Feedforward.kA).velocity()
       .add(new PIDController(Constants.Feedback.kP, Constants.Feedback.kI, Constants.Feedback.kD));
 
-    rightController = new Feedforward.Drivetrain(Constants.Feedforward.kS, Constants.Feedforward.kV, Constants.Feedforward.kA).position()
+    rightController = new Feedforward.Drivetrain(Constants.Feedforward.kS, Constants.Feedforward.kV, Constants.Feedforward.kA).velocity()
       .add(new PIDController(Constants.Feedback.kP, Constants.Feedback.kI, Constants.Feedback.kD));
 
     leftTargetSpeed = 0;
@@ -62,35 +63,14 @@ public class Romi extends Robot {
     rightTargetSpeed = rightMetersPerSecond;
   }
 
-  // omega in rotations/s
-  @Override
-  public void turn(double omega) {
-    double wheelSpeeds = Constants.Encoder.TRACK_WIDTH_METERS * omega / 2;
-
-    drive(-wheelSpeeds, wheelSpeeds);
-  }
-
-  public void resetEncoders() {
-    leftEncoder.reset();
-    rightEncoder.reset();
-  }
-
-  public double getLeftDistanceMeters() {
-    return leftEncoder.getDistance();
-  }
-
-  public double getRightDistanceMeters() {
-    return rightEncoder.getDistance();
-  }
-
   @Override
   public Pose2d getPose() {
     return odometry.getPoseMeters();
   }
 
   @Override
-  public double getGyroAngleDegrees() {
-    return gyro.getAngleZ();
+  public Rotation2d getRotation2d() {
+    return gyro.getRotation2d();
   }
 
   @Override
@@ -99,14 +79,18 @@ public class Romi extends Robot {
   }
 
   @Override
-  public TrajectoryConfig getConstraints() {
-    return new TrajectoryConfig(Constraints.MAX_VEL_METERS_PER_SECOND, Constraints.MAX_ACCEL_METERS_PER_SECOND_SQ)
-      .setKinematics(kinematics);
+  public TrajectoryConfig getTrajectoryConfig() {
+    return new TrajectoryConfig(
+        Constraints.MAX_VEL, 
+        Constraints.MAX_ACC
+    ).setKinematics(kinematics);
   }
 
   @Override
   public void periodic() {
-    leftMotor.set(leftController.update(leftTargetSpeed, leftEncoder.getRate()));
-    rightMotor.set(rightController.update(rightTargetSpeed, rightEncoder.getRate()));
+    odometry.update(getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
+
+    leftMotor.setVoltage(leftController.update(leftTargetSpeed, leftEncoder.getRate()));
+    rightMotor.setVoltage(rightController.update(rightTargetSpeed, rightEncoder.getRate()));
   }
 }
