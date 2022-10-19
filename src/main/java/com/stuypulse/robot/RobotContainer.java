@@ -4,7 +4,7 @@
 
 package com.stuypulse.robot;
 
-import com.stuypulse.robot.commands.DoNothingCommand;
+import com.stuypulse.robot.auton.YourAutonomous;
 import com.stuypulse.robot.subsystems.Robot;
 import com.stuypulse.robot.subsystems.Romi;
 
@@ -39,7 +39,7 @@ public class RobotContainer {
   private void configureButtonBindings() {}
 
   private void configureAutons() {
-    autonChooser.setDefaultOption("Romi Commands", new ControlRobot(robot));
+    autonChooser.setDefaultOption("Your Autonomous", new YourAutonomous(robot));
   }
 
   /**

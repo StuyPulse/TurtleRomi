@@ -14,29 +14,35 @@ public class TurnDelta extends CommandBase {
     private final Robot robot;
     private final Controller controller;
 
-    private final double targetAngle;
+    private final double deltaRad;
+    private double targetRad;
 
-    public TurnDelta(Robot robot, double deltaDegrees) {
+    public TurnDelta(Robot robot, double deltaRad) {
         this.robot = robot;
 
+        // it's very funny how it's okay that this is not an angle controller (you don't have a continous system cause when delta > PI)
         controller = new PIDController(1, 0, 0)
             .add(new Feedforward.Drivetrain(0.0, 1.0, 0.0).position()) // convert from angle position setpoint to velocity
-            .setOutputFilter(new MotionProfile(Constraints.MAX_ANGULAR_VEL, Constraints.MAX_ANGULAR_VEL));
+            .setSetpointFilter(new MotionProfile(Constraints.MAX_ANGULAR_VEL, Constraints.MAX_ANGULAR_ACC));
         
-        targetAngle = robot.getGyroAngleDegrees() + deltaDegrees;
+        this.deltaRad = deltaRad;
 
         addRequirements(robot);
     }
 
     @Override
+    public void initialize() {
+        targetRad = robot.getRotation2d().getRadians() + deltaRad;
+    }
+
+    @Override
     public void execute() {
-        // controller might be outputting angles/s
-        robot.turn(controller.update(targetAngle, robot.getGyroAngleDegrees()));
+        robot.turn(controller.update(targetRad, robot.getRotation2d().getRadians()));
     }
 
     @Override
     public boolean isFinished() {
-        return controller.isDone(0.5);
+        return controller.isDone(Math.toRadians(2.0));
     }
 
 }
