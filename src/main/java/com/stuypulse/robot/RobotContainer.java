@@ -5,7 +5,7 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.DoNothingCommand;
-import com.stuypulse.robot.commands.ExampleCommand;
+import com.stuypulse.robot.subsystems.Robot;
 import com.stuypulse.robot.subsystems.Romi;
 
 import edu.wpi.first.wpilibj.XboxController;
@@ -19,8 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final Romi drivetrain = new Romi();
+  private final Robot robot = new Romi();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
@@ -40,7 +39,7 @@ public class RobotContainer {
   private void configureButtonBindings() {}
 
   private void configureAutons() {
-    autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
+    autonChooser.setDefaultOption("Romi Commands", new ControlRobot(robot));
   }
 
   /**

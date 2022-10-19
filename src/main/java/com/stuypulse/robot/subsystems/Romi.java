@@ -18,7 +18,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.romi.RomiGyro;
 
 public class Romi extends Robot {
 
@@ -33,6 +33,8 @@ public class Romi extends Robot {
 
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(new Rotation2d(0));
   private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.Encoder.TRACK_WIDTH_METERS);
+
+  private final RomiGyro gyro = new RomiGyro();
 
   /** Creates a new RomiDrivetrain. */
   public Romi() {
@@ -60,6 +62,14 @@ public class Romi extends Robot {
     rightTargetSpeed = rightMetersPerSecond;
   }
 
+  // omega in rotations/s
+  @Override
+  public void turn(double omega) {
+    double wheelSpeeds = Constants.Encoder.TRACK_WIDTH_METERS * omega / 2;
+
+    drive(-wheelSpeeds, wheelSpeeds);
+  }
+
   public void resetEncoders() {
     leftEncoder.reset();
     rightEncoder.reset();
@@ -76,6 +86,11 @@ public class Romi extends Robot {
   @Override
   public Pose2d getPose() {
     return odometry.getPoseMeters();
+  }
+
+  @Override
+  public double getGyroAngleDegrees() {
+    return gyro.getAngleZ();
   }
 
   @Override
