@@ -39,11 +39,11 @@ public abstract class Robot extends SubsystemBase {
 	}
 
 	public final Command rt(double degrees) {
-		return new TurnDelta(this, Rotation2d.fromDegrees(-degrees));
+		return new TurnDelta(this, Math.toRadians(-degrees));
 	}
 
 	public final Command lt(double degrees) {
-		return new TurnDelta(this, Rotation2d.fromDegrees(+degrees));
+		return new TurnDelta(this, Math.toRadians(+degrees));
 	}
 
 }
