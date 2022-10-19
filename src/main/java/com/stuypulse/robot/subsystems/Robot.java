@@ -6,6 +6,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -16,9 +17,15 @@ import com.stuypulse.robot.commands.TurnDelta;
 
 public abstract class Robot extends SubsystemBase {
 
+	/** KINEMATICS & ODOMETRY */
+
 	public abstract Pose2d getPose();
-	public abstract DifferentialDriveKinematics getKinematics();
 	public abstract Rotation2d getRotation2d();
+	public abstract DifferentialDriveKinematics getKinematics();
+
+	protected abstract TrajectoryConfig getTrajectoryConfig();
+
+	/** TELEOP CONTROL **/
 
 	public abstract void drive(double leftMetersPerSecond, double rightMetersPerSecond);
 	
@@ -27,14 +34,14 @@ public abstract class Robot extends SubsystemBase {
 		drive(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
 	}
 
-	protected abstract TrajectoryConfig getTrajectoryConfig();
+	/** AUTONOMOUS CONTROL */
 
 	public final Command fd(double distance) {
 		return new FollowPath(this,
 			TrajectoryGenerator.generateTrajectory(
 				new Pose2d(0, 0, new Rotation2d(0)),
 				List.of(),
-				new Pose2d(distance, 0, new Rotation2d(0)),
+				new Pose2d(Units.inchesToMeters(distance), 0, new Rotation2d(0)),
 				getTrajectoryConfig()));
 	}
 
