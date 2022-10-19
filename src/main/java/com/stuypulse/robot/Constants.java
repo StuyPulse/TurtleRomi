@@ -12,42 +12,46 @@ package com.stuypulse.robot;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants {
+public interface Constants {
 	public interface Ports {
 		int LEFT_MOTOR = 0;
 		int RIGHT_MOTOR = 1;
-		int LEFT_GRAYHILL_A = 4;
-		int LEFT_GRAYHILL_B = 5;
-		int RIGHT_GRAYHILL_A = 6;
-		int RIGHT_GRAYHILL_B = 7;
+
+		int LEFT_ENCODER_A = 4;
+		int LEFT_ENCODER_B = 5;
+
+		int RIGHT_ENCODER_A = 6;
+		int RIGHT_ENCODER_B = 7;
 	}
+
+	double TRACK_WIDTH_METERS = 0.141;
+
 
 	public interface Encoder {
 		double COUNTS_PER_REVOLUTION = 1440.0;
 		double WHEEL_DIAMETER_METERS = 0.07;
-		double TRACK_WIDTH_METERS = 0.141;
-
+		
 		double DISTANCE_PER_PULSE = (Math.PI * WHEEL_DIAMETER_METERS) / COUNTS_PER_REVOLUTION;
 	}
 
 	public interface Feedforward {
-		double kS = 0.0;
-		double kV = 0.0;
-		double kA = 0.0;
+		double kS = 0.376;
+		double kV = 10.00; // TODO: find from romi
+		double kA = 0.186;
 	}
 
 	public interface Feedback {
-		double kP = 1.0;
+		double kP = 0.125;
 		double kI = 0.0;
 		double kD = 0.0;
 	}
 
 	public interface Constraints {
-		double MAX_VEL = 1.0;
-		double MAX_ACC = 1.0;
+		double MAX_VEL = 1.0; // m/s
+		double MAX_ACC = 1.0; // m/s^2
 
 		// rad/s^2
-		double MAX_ANGULAR_VEL = (MAX_VEL * 2) / Constants.Encoder.TRACK_WIDTH_METERS;
-		double MAX_ANGULAR_ACC = (Math.pow(MAX_ACC, 2)) / (Constants.Encoder.TRACK_WIDTH_METERS/2); // a = v^2 / r
+		double MAX_ANGULAR_VEL = (MAX_VEL * 2) / TRACK_WIDTH_METERS;
+		double MAX_ANGULAR_ACC = (Math.pow(MAX_ACC, 2)) / (TRACK_WIDTH_METERS/2); // a = v^2 / r
 	}
 }
