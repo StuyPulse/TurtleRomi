@@ -43,12 +43,11 @@ public final class Constants {
 	}
 
 	public interface Constraints {
-		double MAX_VEL_METERS_PER_SECOND = 1.0;
-		double MAX_ACCEL_METERS_PER_SECOND_SQ = 1.0;
+		double MAX_VEL = 1.0;
+		double MAX_ACC = 1.0;
 
-		// degrees/s
-		double MAX_MOTOR_SPEED = 2.0;
-		// angular m/s
-		double MAX_ANGULAR_VEL = (MAX_MOTOR_SPEED * 2) / Constants.Encoder.TRACK_WIDTH_METERS;
+		// rad/s^2
+		double MAX_ANGULAR_VEL = (MAX_VEL * 2) / Constants.Encoder.TRACK_WIDTH_METERS;
+		double MAX_ANGULAR_ACC = (Math.pow(MAX_ACC, 2)) / (Constants.Encoder.TRACK_WIDTH_METERS/2); // a = v^2 / r
 	}
 }
