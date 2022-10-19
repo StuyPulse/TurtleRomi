@@ -36,7 +36,7 @@ public interface Constants {
 
 	public interface Feedforward {
 		double kS = 0.376;
-		double kV = 10.00; // TODO: find from romi
+		double kV = 10.00;
 		double kA = 0.186;
 	}
 
