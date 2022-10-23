@@ -65,6 +65,10 @@ public class SimRomi extends Robot {
 		SmartDashboard.putData(field);
 	}
 
+	public Field2d getField2d() {
+		return field;
+	}
+
 	@Override
 	public void drive(double leftMetersPerSecond, double rightMetersPerSecond) {
 		leftTargetSpeed.set(leftMetersPerSecond);
@@ -77,7 +81,7 @@ public class SimRomi extends Robot {
 	}
 
 	@Override
-	public void reset(Pose2d pose) {
+	public void setPose(Pose2d pose) {
 		sim.setPose(pose);
 
 		odometry.resetPosition(pose, new Rotation2d());
