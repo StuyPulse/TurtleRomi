@@ -92,7 +92,7 @@ public class Romi extends Robot {
 
   @Override
   public Rotation2d getRotation2d() {
-    return gyro.getRotation2d();
+    return new Rotation2d((rightEncoder.getDistance() - leftEncoder.getDistance()) / Constants.TRACK_WIDTH_METERS);
   }
 
   @Override

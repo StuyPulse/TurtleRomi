@@ -25,7 +25,7 @@ public class TurnDelta extends CommandBase {
         this.robot = robot;
 
         // it's very funny how it's okay that this is not an angle controller (you don't have a continous system cause when delta > PI)
-        controller = new PIDController(1, 0, 0)
+        controller = new PIDController(1, 0, 0.1)
             .add(new Feedforward.Drivetrain(0.0, 1.0, 0.0).position()) // convert from angle position setpoint to velocity
             .setSetpointFilter(new MotionProfile(Constraints.MAX_ANGULAR_VEL, Constraints.MAX_ANGULAR_ACC));
         

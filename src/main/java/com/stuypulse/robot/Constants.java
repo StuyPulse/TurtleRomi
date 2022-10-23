@@ -36,7 +36,7 @@ public interface Constants {
 	}
 
 	public interface Feedforward {
-		double kS = 0.376;
+		double kS = 0.45;
 		double kV = 10.00;
 		double kA = 0.186;
 	}
