@@ -48,6 +48,15 @@ public abstract class Robot extends SubsystemBase {
 				getTrajectoryConfig()));
 	}
 
+	public final Command bk(double distance) {
+		return new FollowPath(this,
+			TrajectoryGenerator.generateTrajectory(
+				new Pose2d(0, 0, new Rotation2d(0)),
+				List.of(),
+				new Pose2d(-Units.feetToMeters(distance), 0, new Rotation2d(0)),
+				getTrajectoryConfig().setReversed(true)));
+	}
+
 	public final Command rt(double degrees) {
 		return new TurnDelta(this, Math.toRadians(-degrees));
 	}

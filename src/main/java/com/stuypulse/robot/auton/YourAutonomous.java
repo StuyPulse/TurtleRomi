@@ -9,9 +9,9 @@ public class YourAutonomous extends SequentialCommandGroup {
             // Create a square
 
             robot.fd(4), 
-            robot.lt(90), 
-            robot.fd(4), 
-            robot.lt(90), 
+            robot.rt(90), 
+            robot.bk(4), 
+            robot.rt(90), 
             robot.fd(4), 
             robot.lt(90),
             robot.fd(4),
