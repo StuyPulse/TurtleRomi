@@ -5,6 +5,8 @@ import com.stuypulse.robot.subsystems.Robot;
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.feedback.PIDController;
 import com.stuypulse.stuylib.control.feedforward.Feedforward;
+import com.stuypulse.stuylib.streams.booleans.BStream;
+import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
 import com.stuypulse.stuylib.streams.filters.MotionProfile;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -17,6 +19,8 @@ public class TurnDelta extends CommandBase {
     private final double deltaRad;
     private double targetRad;
 
+    private final BStream isDone;
+
     public TurnDelta(Robot robot, double deltaRad) {
         this.robot = robot;
 
@@ -26,6 +30,10 @@ public class TurnDelta extends CommandBase {
             .setSetpointFilter(new MotionProfile(Constraints.MAX_ANGULAR_VEL, Constraints.MAX_ANGULAR_ACC));
         
         this.deltaRad = deltaRad;
+
+        isDone = BStream.create(() -> true)
+            .and(() -> controller.isDone(Math.toRadians(1.0)))
+            .filtered(new BDebounce.Rising(0.5));
 
         addRequirements(robot);
     }
@@ -42,7 +50,12 @@ public class TurnDelta extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return controller.isDone(Math.toRadians(2.0));
+        return isDone.get();
+    }
+
+    @Override
+    public void end(boolean i) {
+        robot.turn(0);
     }
 
 }
