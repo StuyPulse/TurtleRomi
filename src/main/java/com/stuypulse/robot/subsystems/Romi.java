@@ -19,6 +19,8 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.romi.RomiGyro;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Romi extends Robot {
 
@@ -36,6 +38,8 @@ public class Romi extends Robot {
   private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.TRACK_WIDTH_METERS);
 
   private final RomiGyro gyro = new RomiGyro();
+
+  private final Field2d field = new Field2d();
 
   /** Creates a new RomiDrivetrain. */
   public Romi() {
@@ -59,6 +63,8 @@ public class Romi extends Robot {
     rightMotor.setInverted(true);
 
     odometry = new DifferentialDriveOdometry(getRotation2d());
+
+    SmartDashboard.putData(field);
   }
 
   @Override
@@ -70,6 +76,18 @@ public class Romi extends Robot {
   @Override
   public Pose2d getPose() {
     return odometry.getPoseMeters();
+  }
+
+  public void resetEncoders() {
+    leftEncoder.reset();
+    rightEncoder.reset();
+  }
+
+  @Override
+  public void setPose(Pose2d pose) {
+    resetEncoders();
+
+    odometry.resetPosition(pose, new Rotation2d());
   }
 
   @Override
@@ -93,8 +111,14 @@ public class Romi extends Robot {
   @Override
   public void periodic() {
     odometry.update(getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
+    field.setRobotPose(getPose());
 
     leftMotor.setVoltage(leftController.update(leftTargetSpeed, leftEncoder.getRate()));
     rightMotor.setVoltage(rightController.update(rightTargetSpeed, rightEncoder.getRate()));
+  }
+
+  @Override
+  public Field2d getField2d() {
+    return field;
   }
 }

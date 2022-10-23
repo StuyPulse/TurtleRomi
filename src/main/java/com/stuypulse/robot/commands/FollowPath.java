@@ -1,22 +1,42 @@
 package com.stuypulse.robot.commands;
 
 import com.stuypulse.robot.subsystems.Robot;
+import com.stuypulse.robot.util.RamseteCommand2;
 
 import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
-public class FollowPath extends RamseteCommand {
+public class FollowPath extends RamseteCommand2 {
+
+	private final Robot robot;
+	private final Trajectory baseTrajectory;
 
 	public FollowPath(Robot robot, Trajectory trajectory) {
 		super(
-			trajectory.relativeTo(robot.getPose()),
+			trajectory,
 			robot::getPose,
 			new RamseteController(),
 			robot.getKinematics(),
 			robot::drive,
 			robot
 		);
+
+		this.robot = robot;
+		this.baseTrajectory = trajectory;
+	}
+
+	@Override
+	public void initialize() {
+		m_trajectory = baseTrajectory.transformBy(new Transform2d(baseTrajectory.getInitialPose(), m_pose.get()));
+		robot.getField2d().getObject("FollowPath/Trajectory").setTrajectory(m_trajectory);
+		super.initialize();
+	}
+
+	@Override
+	public void end(boolean interrupted) {
+		robot.getField2d().getObject("FollowPath/Trajectory").setTrajectory(new Trajectory());
+		super.end(interrupted);
 	}
 
 }

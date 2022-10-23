@@ -4,13 +4,17 @@
 
 package com.stuypulse.robot;
 
-import com.stuypulse.robot.auton.YourAutonomous;
-import com.stuypulse.robot.subsystems.Robot;
-import com.stuypulse.robot.subsystems.Romi;
+import com.stuypulse.robot.auton.*;
+import com.stuypulse.robot.commands.*;
+import com.stuypulse.robot.subsystems.*;
+import com.stuypulse.stuylib.input.Gamepad;
+import com.stuypulse.stuylib.input.gamepads.keyboard.SimKeyGamepad;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,12 +23,16 @@ import edu.wpi.first.wpilibj2.command.Command;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Robot robot = new Romi();
-
+  private final Robot robot = new SimRomi();
+  private final Gamepad gamepad = new SimKeyGamepad();
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    robot.setDefaultCommand(new RunCommand(() -> {
+      robot.drive(gamepad.getLeftY(), gamepad.getRightY());
+    }, robot));
+
     // Configure the button bindings
     configureButtonBindings();
     configureAutons();
@@ -34,12 +42,19 @@ public class RobotContainer {
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * edu.wpi.first.wpilibj2.command.
+   * button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    
+  }
 
   private void configureAutons() {
     autonChooser.setDefaultOption("Your Autonomous", new YourAutonomous(robot));
+    autonChooser.addOption("Straight", new RunStraight(robot));
+    autonChooser.addOption("Straight Path", robot.fd(10));
+
+    SmartDashboard.putData("Auton Chooser", autonChooser);
   }
 
   /**

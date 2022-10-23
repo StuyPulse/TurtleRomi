@@ -25,6 +25,7 @@ public interface Constants {
 	}
 
 	double TRACK_WIDTH_METERS = 0.141;
+	double WHEEL_DIAMETER_METERS = 0.070;
 
 
 	public interface Encoder {
