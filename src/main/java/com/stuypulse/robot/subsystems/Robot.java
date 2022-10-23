@@ -20,6 +20,7 @@ public abstract class Robot extends SubsystemBase {
 	/** KINEMATICS & ODOMETRY */
 
 	public abstract Pose2d getPose();
+	public abstract void reset(Pose2d pose);
 	public abstract Rotation2d getRotation2d();
 	public abstract DifferentialDriveKinematics getKinematics();
 

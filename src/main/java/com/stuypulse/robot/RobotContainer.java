@@ -63,6 +63,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return robot.fd(10);
+    return autonChooser.getSelected();
   }
 }

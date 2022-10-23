@@ -72,6 +72,18 @@ public class Romi extends Robot {
     return odometry.getPoseMeters();
   }
 
+  public void resetEncoders() {
+    leftEncoder.reset();
+    rightEncoder.reset();
+  }
+
+  @Override
+  public void reset(Pose2d pose) {
+    resetEncoders();
+
+    odometry.resetPosition(pose, new Rotation2d());
+  }
+
   @Override
   public Rotation2d getRotation2d() {
     return gyro.getRotation2d();

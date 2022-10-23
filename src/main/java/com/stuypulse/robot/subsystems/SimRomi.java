@@ -77,6 +77,13 @@ public class SimRomi extends Robot {
 	}
 
 	@Override
+	public void reset(Pose2d pose) {
+		sim.setPose(pose);
+
+		odometry.resetPosition(pose, new Rotation2d());
+	}
+
+	@Override
 	public Rotation2d getRotation2d() {
 		return sim.getHeading();
 	}
