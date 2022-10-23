@@ -4,11 +4,9 @@
 
 package com.stuypulse.robot;
 
-import com.stuypulse.robot.auton.YourAutonomous;
-import com.stuypulse.robot.commands.RunStraight;
-import com.stuypulse.robot.subsystems.Robot;
-import com.stuypulse.robot.subsystems.Romi;
-import com.stuypulse.robot.subsystems.SimRomi;
+import com.stuypulse.robot.auton.*;
+import com.stuypulse.robot.commands.*;
+import com.stuypulse.robot.subsystems.*;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.keyboard.SimKeyGamepad;
 
@@ -34,6 +32,7 @@ public class RobotContainer {
     robot.setDefaultCommand(new RunCommand(() -> {
       robot.drive(gamepad.getLeftY(), gamepad.getRightY());
     }, robot));
+
     // Configure the button bindings
     configureButtonBindings();
     configureAutons();
@@ -43,7 +42,8 @@ public class RobotContainer {
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * edu.wpi.first.wpilibj2.command.
+   * button.JoystickButton}.
    */
   private void configureButtonBindings() {
     
