@@ -68,6 +68,9 @@ public class Edwin extends Robot {
 
         leftEncoder = left[0].getEncoder();
         rightEncoder = right[0].getEncoder();
+
+        leftEncoder.setVelocityConversionFactor(Encoders.GEAR_DISTANCE_PER_ROTATION / 60);
+        rightEncoder.setVelocityConversionFactor(Encoders.GEAR_DISTANCE_PER_ROTATION / 60);
         
         leftController = new Feedforward.Drivetrain(Motion.Feedforward.kS, Motion.Feedforward.kV, Motion.Feedforward.kA).velocity()
             .add(new PIDController(Motion.PID.kP, Motion.PID.kI, Motion.PID.kD));
