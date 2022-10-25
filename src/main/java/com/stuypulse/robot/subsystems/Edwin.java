@@ -81,6 +81,7 @@ public class Edwin extends Robot {
         setPose(new Pose2d());
 
         field = new Field2d();
+        SmartDashboard.putData("Edwin/Field", field);
     }
 
     /*********************
@@ -198,8 +199,6 @@ public class Edwin extends Robot {
         SmartDashboard.putNumber("Edwin/Pose X", getPose().getX());
         SmartDashboard.putNumber("Edwin/Pose Y", getPose().getY());
         SmartDashboard.putNumber("Edwin/Gyro Angle", getRotation2d().getDegrees());
-    
-        SmartDashboard.putData("Edwin/Field", field);
     }
 
     @Override
