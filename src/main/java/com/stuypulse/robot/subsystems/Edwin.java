@@ -30,8 +30,6 @@ public class Edwin extends Robot {
     private final CANSparkMax[] left;
     private final CANSparkMax[] right;
     
-    private final DifferentialDrive drivetrain;
-
     private final RelativeEncoder leftEncoder;
     private final RelativeEncoder rightEncoder;
 
@@ -60,11 +58,6 @@ public class Edwin extends Robot {
 
         RIGHT_TOP_MOTOR.configure(right[0]);
         RIGHT_BOTTOM_MOTOR.configure(right[1]);
-
-        drivetrain = new DifferentialDrive(
-            new MotorControllerGroup(left), 
-            new MotorControllerGroup(right)
-        );
 
         leftEncoder = left[0].getEncoder();
         rightEncoder = right[0].getEncoder();
@@ -164,7 +157,7 @@ public class Edwin extends Robot {
      ********************/
 
     public void stop() {
-        drivetrain.stopMotor();
+        driveVolts(0., 0.);
     }
 
     public void drive(double leftMetersPerSecond, double rightMetersPerSecond) {
