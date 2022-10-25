@@ -1,22 +1,24 @@
 package com.stuypulse.robot.subsystems;
 
+import static com.stuypulse.robot.constants.Ports.Edwin.*;
+import static com.stuypulse.robot.constants.Settings.Edwin.*;
+import static com.stuypulse.robot.constants.Motors.Edwin.*;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.feedback.PIDController;
 import com.stuypulse.stuylib.control.feedforward.Feedforward;
 import com.stuypulse.stuylib.math.Angle;
-
-import static com.stuypulse.robot.Constants.*;
-import static com.stuypulse.robot.Constants.EdwinSettings.*;
+import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -25,16 +27,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Edwin extends Robot {
     
-    private final MotorControllerGroup left;
-    private final MotorControllerGroup right;
+    private final CANSparkMax[] left;
+    private final CANSparkMax[] right;
     
     private final DifferentialDrive drivetrain;
 
-    private final Encoder leftGreyhill;
-    private final Encoder rightGreyhill;
+    private final RelativeEncoder leftEncoder;
+    private final RelativeEncoder rightEncoder;
 
     private final Controller leftController, rightController;
-    private double leftTargetSpeed, rightTargetSpeed;
+    private SmartNumber leftTargetSpeed, rightTargetSpeed;
 
     private final DifferentialDriveOdometry odometry;
     private final DifferentialDriveKinematics kinematics;
@@ -43,40 +45,42 @@ public class Edwin extends Robot {
     private final Field2d field;
 
     public Edwin() {
-        left = new MotorControllerGroup(
-            new CANSparkMax(Ports.Edwin.LEFT_TOP, MotorType.kBrushless), 
-            new CANSparkMax(Ports.Edwin.LEFT_MIDDLE, MotorType.kBrushless),
-            new CANSparkMax(Ports.Edwin.LEFT_BOTTOM, MotorType.kBrushless)
+        left = new CANSparkMax[] {
+            new CANSparkMax(LEFT_TOP, MotorType.kBrushless), 
+            new CANSparkMax(LEFT_BOTTOM, MotorType.kBrushless)
+        };
+
+        right = new CANSparkMax[] {
+            new CANSparkMax(RIGHT_TOP, MotorType.kBrushless), 
+            new CANSparkMax(RIGHT_BOTTOM, MotorType.kBrushless)
+        };
+
+        LEFT_TOP_MOTOR.configure(left[0]);
+        LEFT_BOTTOM_MOTOR.configure(left[1]);
+
+        RIGHT_TOP_MOTOR.configure(right[0]);
+        RIGHT_BOTTOM_MOTOR.configure(right[1]);
+
+        drivetrain = new DifferentialDrive(
+            new MotorControllerGroup(left), 
+            new MotorControllerGroup(right)
         );
 
-        right = new MotorControllerGroup(
-            new CANSparkMax(Ports.Edwin.RIGHT_TOP, MotorType.kBrushless), 
-            new CANSparkMax(Ports.Edwin.RIGHT_MIDDLE, MotorType.kBrushless),
-            new CANSparkMax(Ports.Edwin.RIGHT_BOTTOM, MotorType.kBrushless)
-        );
-
-        drivetrain = new DifferentialDrive(left, right);
-
-        leftGreyhill = new Encoder(Ports.Edwin.Encoders.LEFT_A, Ports.Edwin.Encoders.LEFT_B);
-        rightGreyhill = new Encoder(Ports.Edwin.Encoders.RIGHT_A, Ports.Edwin.Encoders.RIGHT_B);
+        leftEncoder = left[0].getEncoder();
+        rightEncoder = right[0].getEncoder();
         
-        setGreyhillDistancePerPulse(EdwinSettings.Encoders.GREYHILL_DISTANCE_PER_PULSE);
-
         leftController = new Feedforward.Drivetrain(Motion.Feedforward.kS, Motion.Feedforward.kV, Motion.Feedforward.kA).velocity()
             .add(new PIDController(Motion.PID.kP, Motion.PID.kI, Motion.PID.kD));
         
         rightController = new Feedforward.Drivetrain(Motion.Feedforward.kS, Motion.Feedforward.kV, Motion.Feedforward.kA).velocity()
             .add(new PIDController(Motion.PID.kP, Motion.PID.kI, Motion.PID.kD));
 
-        leftTargetSpeed = 0;
-        rightTargetSpeed = 0;
+        leftTargetSpeed = new SmartNumber("Edwin/Left Target Speed", 0);
+        rightTargetSpeed = new SmartNumber("Edwin/Right TargetSpeed", 0);
 
         odometry = new DifferentialDriveOdometry(getRotation2d());
-        kinematics = new DifferentialDriveKinematics(EdwinSettings.TRACK_WIDTH);
+        kinematics = new DifferentialDriveKinematics(TRACK_WIDTH);
         navx = new AHRS(SPI.Port.kMXP);
-
-        right.setInverted(true);
-        reset(EdwinSettings.Odometry.STARTING_POSITION);
 
         field = new Field2d();
     }
@@ -85,21 +89,13 @@ public class Edwin extends Robot {
      * ENCODER FUNCTIONS *
      *********************/
 
-    private void setGreyhillDistancePerPulse(double distance) {
-        rightGreyhill.setDistancePerPulse(distance);
-        rightGreyhill.reset();
-
-        leftGreyhill.setDistancePerPulse(distance);
-        leftGreyhill.reset();
-    }
-
     // Distance
     private double getLeftDistance() {
-        return leftGreyhill.getDistance();
+        return leftEncoder.getPosition();
     }
 
     private double getRightDistance() {
-        return rightGreyhill.getDistance();
+        return rightEncoder.getPosition();
     }
 
     private double getDistance() {
@@ -108,11 +104,11 @@ public class Edwin extends Robot {
 
     // Velocity
     private double getLeftVelocity() {
-        return leftGreyhill.getRate();
+        return leftEncoder.getVelocity();
     }
 
     private double getRightVelocity() {
-        return rightGreyhill.getRate();
+        return rightEncoder.getVelocity();
     }
 
     private double getVelocity() {
@@ -123,14 +119,9 @@ public class Edwin extends Robot {
      * ROBOT ANGLE *
      ***************/
 
-    // Gets current Angle of the Robot as a double (contiuous / not +-180)
-    public double getRawGyroAngle() {
-        return navx.getAngle();
-    }
-
-    // Gets current Angle of the Robot
-    public Angle getGyroAngle() {
-        return Angle.fromDegrees(getRawGyroAngle());
+    // Gets current Angle of the Robot as a Rotation2d (contiuous / not +-180)
+    public Rotation2d getRotation2d() {
+        return navx.getRotation2d();
     }
 
     /**********************
@@ -141,20 +132,12 @@ public class Edwin extends Robot {
         odometry.update(getRotation2d(), getLeftDistance(), getRightDistance());
     }
 
-    public Rotation2d getRotation2d() {
-        // TODO: check if this needs to be negative
-        return getGyroAngle().negative().getRotation2d();
-    }
-
     public Pose2d getPose() {
-        updateOdometry();
         return odometry.getPoseMeters();
     }
 
     @Override
     public void setPose(Pose2d pose) {
-        reset();
-
         odometry.resetPosition(pose, new Rotation2d());
     }
 
@@ -166,24 +149,9 @@ public class Edwin extends Robot {
     @Override
     public TrajectoryConfig getTrajectoryConfig() {
         return new TrajectoryConfig(
-            EdwinSettings.Motion.MAX_VELOCITY, 
-            EdwinSettings.Motion.MAX_ACCELERATION
+            Motion.MAX_VELOCITY, 
+            Motion.MAX_ACCELERATION
         ).setKinematics(kinematics);
-    }
-
-    /****************
-     * SENSOR RESET *
-     ****************/
-
-    public void reset(Pose2d location) {
-        leftGreyhill.reset();
-        rightGreyhill.reset();
-
-        odometry.resetPosition(location, getRotation2d());
-    }
-
-    public void reset() {
-        reset(getPose());
     }
 
     /********************
@@ -195,17 +163,29 @@ public class Edwin extends Robot {
     }
 
     public void drive(double leftMetersPerSecond, double rightMetersPerSecond) {
-        leftTargetSpeed = leftMetersPerSecond;
-        rightTargetSpeed = rightMetersPerSecond;
+        leftTargetSpeed.set(leftMetersPerSecond);
+        rightTargetSpeed.set(rightMetersPerSecond);
+    }
+
+    public void driveVolts(double leftVolts, double rightVolts) {
+        for (CANSparkMax motor : left) {
+            motor.setVoltage(leftVolts);
+        }
+
+        for (CANSparkMax motor : right) {
+            motor.setVoltage(rightVolts);
+        }
     }
 
     @Override
     public void periodic() {
         updateOdometry();
         field.setRobotPose(getPose());
-
-        left.setVoltage(leftController.update(leftTargetSpeed, getLeftVelocity()));
-        right.setVoltage(rightController.update(rightTargetSpeed, getRightVelocity()));
+        
+        driveVolts(
+            leftController.update(leftTargetSpeed.get(), getLeftVelocity()), 
+            rightController.update(rightTargetSpeed.get(), getRightVelocity())
+        );
 
         // LOGGING
 
@@ -219,7 +199,9 @@ public class Edwin extends Robot {
 
         SmartDashboard.putNumber("Edwin/Pose X", getPose().getX());
         SmartDashboard.putNumber("Edwin/Pose Y", getPose().getY());
-        SmartDashboard.putNumber("Edwin/Gyro Angle", getGyroAngle().toDegrees());
+        SmartDashboard.putNumber("Edwin/Gyro Angle", getRotation2d().getDegrees());
+    
+        SmartDashboard.putData("Edwin/Field", field);
     }
 
     @Override
