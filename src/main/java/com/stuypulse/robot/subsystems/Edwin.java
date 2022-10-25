@@ -82,6 +82,8 @@ public class Edwin extends Robot {
         kinematics = new DifferentialDriveKinematics(TRACK_WIDTH);
         navx = new AHRS(SPI.Port.kMXP);
 
+        setPose(new Pose2d());
+
         field = new Field2d();
     }
 
