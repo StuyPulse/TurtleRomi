@@ -73,22 +73,12 @@ public interface Settings {
         }
 
         public interface Encoders {
-
-            public interface GearRatio {
-                double LOW_GEAR_NEO_TO_WHEEL =  (1.0 / 16.67); 
-
-                double HIGH_GEAR_NEO_TO_WHEEL = (1.0 / 7.71);
-
-                double GREYHILL_TO_WHEEL = 1.0;
-            }
-
             double WHEEL_DIAMETER = Units.inchesToMeters(6);
             double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
-            double LOW_GEAR_DISTANCE_PER_ROTATION =
-                    WHEEL_CIRCUMFERENCE * GearRatio.LOW_GEAR_NEO_TO_WHEEL;
-            double HIGH_GEAR_DISTANCE_PER_ROTATION =
-                    WHEEL_CIRCUMFERENCE * GearRatio.HIGH_GEAR_NEO_TO_WHEEL;
+            double GEAR_NEO_TO_WHEEL = (1.0 / 7.71);
+
+            double GEAR_DISTANCE_PER_ROTATION = WHEEL_CIRCUMFERENCE * GEAR_NEO_TO_WHEEL;
         }
     }
 }
