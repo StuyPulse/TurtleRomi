@@ -5,6 +5,19 @@ import com.stuypulse.stuylib.network.SmartNumber;
 import edu.wpi.first.math.util.Units;
 
 public interface Settings {
+
+    public interface Driver {
+        // Low Pass Filter and deadband for Driver Controls
+        SmartNumber SPEED_DEADBAND = new SmartNumber("Driver Settings/Speed Deadband", 0.05);
+        SmartNumber ANGLE_DEADBAND = new SmartNumber("Driver Settings/Turn Deadband", 0.05);
+
+        SmartNumber SPEED_POWER = new SmartNumber("Driver Settings/Speed Power", 1.0);
+        SmartNumber ANGLE_POWER = new SmartNumber("Driver Settings/Turn Power", 1.0);
+
+        SmartNumber SPEED_FILTER = new SmartNumber("Driver Settings/Speed Filtering", 0.2);
+        SmartNumber ANGLE_FILTER = new SmartNumber("Driver Settings/Turn Filtering", 0.01);
+    }
+    
     public interface Romi {
 
         public interface Robot {
@@ -41,15 +54,6 @@ public interface Settings {
     }
 
     public interface Edwin {
-        // Low Pass Filter and deadband for Driver Controls
-        SmartNumber SPEED_DEADBAND = new SmartNumber("Driver Settings/Speed Deadband", 0.05);
-        SmartNumber ANGLE_DEADBAND = new SmartNumber("Driver Settings/Turn Deadband", 0.05);
-
-        SmartNumber SPEED_POWER = new SmartNumber("Driver Settings/Speed Power", 1.0);
-        SmartNumber ANGLE_POWER = new SmartNumber("Driver Settings/Turn Power", 1.0);
-
-        SmartNumber SPEED_FILTER = new SmartNumber("Driver Settings/Speed Filtering", 0.2);
-        SmartNumber ANGLE_FILTER = new SmartNumber("Driver Settings/Turn Filtering", 0.01);
 
         // Width of the robot
         double TRACK_WIDTH = Units.inchesToMeters(30.0); // SEAN PROMISED !
