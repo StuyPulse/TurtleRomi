@@ -127,10 +127,6 @@ public class Edwin extends Robot {
      * ODOMETRY FUNCTIONS *
      **********************/
 
-    private void updateOdometry() {
-        odometry.update(getRotation2d(), getLeftDistance(), getRightDistance());
-    }
-
     public Pose2d getPose() {
         return odometry.getPoseMeters();
     }
@@ -139,7 +135,7 @@ public class Edwin extends Robot {
     public void setPose(Pose2d pose) {
         leftEncoder.setPosition(0.);
         rightEncoder.setPosition(0.);
-        
+
         odometry.resetPosition(pose, getRotation2d());
     }
 
@@ -181,7 +177,7 @@ public class Edwin extends Robot {
 
     @Override
     public void periodic() {
-        updateOdometry();
+        odometry.update(getRotation2d(), getLeftDistance(), getRightDistance());
         field.setRobotPose(getPose());
         
         driveVolts(
