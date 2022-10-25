@@ -8,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.stuypulse.robot.constants.Motors.Config;
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.feedback.PIDController;
 import com.stuypulse.stuylib.control.feedforward.Feedforward;
@@ -53,17 +54,10 @@ public class Edwin extends Robot {
             new CANSparkMax(RIGHT_BOTTOM, MotorType.kBrushless)
         };
 
-        LEFT_TOP_MOTOR.configure(left[0]);
-        LEFT_BOTTOM_MOTOR.configure(left[1]);
-
-        RIGHT_TOP_MOTOR.configure(right[0]);
-        RIGHT_BOTTOM_MOTOR.configure(right[1]);
-
         leftEncoder = left[0].getEncoder();
         rightEncoder = right[0].getEncoder();
 
-        leftEncoder.setVelocityConversionFactor(Encoders.GEAR_DISTANCE_PER_ROTATION / 60);
-        rightEncoder.setVelocityConversionFactor(Encoders.GEAR_DISTANCE_PER_ROTATION / 60);
+        configMotors(left, right);
         
         leftController = new Feedforward.Drivetrain(Motion.Feedforward.kS, Motion.Feedforward.kV, Motion.Feedforward.kA).velocity()
             .add(new PIDController(Motion.PID.kP, Motion.PID.kI, Motion.PID.kD));
@@ -82,6 +76,22 @@ public class Edwin extends Robot {
 
         field = new Field2d();
         SmartDashboard.putData("Edwin/Field", field);
+    }
+
+    private void configMotors(CANSparkMax[] left, CANSparkMax[] right) {
+
+        leftEncoder.setVelocityConversionFactor(Encoders.GEAR_DISTANCE_PER_ROTATION / 60);
+        leftEncoder.setPositionConversionFactor(Encoders.GEAR_DISTANCE_PER_ROTATION);
+        rightEncoder.setVelocityConversionFactor(Encoders.GEAR_DISTANCE_PER_ROTATION / 60);
+        rightEncoder.setPositionConversionFactor(Encoders.GEAR_DISTANCE_PER_ROTATION);
+
+        for (CANSparkMax motor : left) {
+            LEFT.configure(motor);
+        }
+
+        for (CANSparkMax motor : right) {
+            RIGHT.configure(motor);
+        }
     }
 
     /*********************

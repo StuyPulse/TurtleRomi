@@ -6,11 +6,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 public interface Motors {
 
     public interface Edwin {
-        Config LEFT_TOP_MOTOR = new Config(false, IdleMode.kBrake, 60);
-        Config LEFT_BOTTOM_MOTOR = new Config(false, IdleMode.kBrake, 60);
-
-        Config RIGHT_TOP_MOTOR = new Config(true, IdleMode.kBrake, 60);
-        Config RIGHT_BOTTOM_MOTOR = new Config(true, IdleMode.kBrake, 60);
+        Config LEFT = new Config(false, IdleMode.kBrake, 60);
+        Config RIGHT = new Config(true, IdleMode.kBrake, 60);
     }
     
     public static class Config {
