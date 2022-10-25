@@ -157,7 +157,7 @@ public class Edwin extends Robot {
         rightTargetSpeed.set(rightMetersPerSecond);
     }
 
-    public void driveVolts(double leftVolts, double rightVolts) {
+    private void driveVolts(double leftVolts, double rightVolts) {
         for (CANSparkMax motor : left) {
             motor.setVoltage(leftVolts);
         }
