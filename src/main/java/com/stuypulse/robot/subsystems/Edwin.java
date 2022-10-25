@@ -137,7 +137,7 @@ public class Edwin extends Robot {
 
     @Override
     public void setPose(Pose2d pose) {
-        odometry.resetPosition(pose, new Rotation2d());
+        odometry.resetPosition(pose, getRotation2d());
     }
 
     @Override
