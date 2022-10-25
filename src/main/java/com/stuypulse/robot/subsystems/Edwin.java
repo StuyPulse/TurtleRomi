@@ -55,7 +55,7 @@ public class Edwin extends Robot {
         leftEncoder = left[0].getEncoder();
         rightEncoder = right[0].getEncoder();
 
-        configMotors(left, right);
+        configMotors();
         
         leftController = new Feedforward.Drivetrain(Motion.Feedforward.kS, Motion.Feedforward.kV, Motion.Feedforward.kA).velocity()
             .add(new PIDController(Motion.PID.kP, Motion.PID.kI, Motion.PID.kD));
@@ -76,7 +76,7 @@ public class Edwin extends Robot {
         SmartDashboard.putData("Edwin/Field", field);
     }
 
-    private void configMotors(CANSparkMax[] left, CANSparkMax[] right) {
+    private void configMotors() {
 
         leftEncoder.setVelocityConversionFactor(Encoders.HIGH_GEAR_DISTANCE_PER_ROTATION / 60);
         leftEncoder.setPositionConversionFactor(Encoders.HIGH_GEAR_DISTANCE_PER_ROTATION);
@@ -157,7 +157,9 @@ public class Edwin extends Robot {
      ********************/
 
     public void stop() {
-        driveVolts(0., 0.);
+        leftTargetSpeed.set(0);
+        rightTargetSpeed.set(0);
+        driveVolts(0, 0);
     }
 
     public void drive(double leftMetersPerSecond, double rightMetersPerSecond) {
