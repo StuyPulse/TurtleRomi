@@ -19,5 +19,7 @@ public interface Ports {
 
         int RIGHT_TOP = 4;
         int RIGHT_BOTTOM = 3;
+
+        int GEAR_SHIFT = 0;
     }
 }

@@ -35,6 +35,8 @@ public class Edwin extends Robot {
     private final Controller leftController, rightController;
     private SmartNumber leftTargetSpeed, rightTargetSpeed;
 
+    private final Solenoid gearShift;
+
     private final DifferentialDriveOdometry odometry;
     private final DifferentialDriveKinematics kinematics;
     private final AHRS navx;
@@ -65,6 +67,9 @@ public class Edwin extends Robot {
 
         leftTargetSpeed = new SmartNumber("Edwin/Left Target Speed", 0);
         rightTargetSpeed = new SmartNumber("Edwin/Right TargetSpeed", 0);
+
+        gearShift = new Solenoid(PneumaticsModuleType.CTREPCM, GEAR_SHIFT);
+        gearShift.set(true);
 
         odometry = new DifferentialDriveOdometry(getRotation2d());
         kinematics = new DifferentialDriveKinematics(TRACK_WIDTH);
