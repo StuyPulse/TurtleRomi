@@ -8,11 +8,9 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.stuypulse.robot.constants.Motors.Config;
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.feedback.PIDController;
 import com.stuypulse.stuylib.control.feedforward.Feedforward;
-import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,9 +18,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -80,10 +78,10 @@ public class Edwin extends Robot {
 
     private void configMotors(CANSparkMax[] left, CANSparkMax[] right) {
 
-        leftEncoder.setVelocityConversionFactor(Encoders.GEAR_DISTANCE_PER_ROTATION / 60);
-        leftEncoder.setPositionConversionFactor(Encoders.GEAR_DISTANCE_PER_ROTATION);
-        rightEncoder.setVelocityConversionFactor(Encoders.GEAR_DISTANCE_PER_ROTATION / 60);
-        rightEncoder.setPositionConversionFactor(Encoders.GEAR_DISTANCE_PER_ROTATION);
+        leftEncoder.setVelocityConversionFactor(Encoders.HIGH_GEAR_DISTANCE_PER_ROTATION / 60);
+        leftEncoder.setPositionConversionFactor(Encoders.HIGH_GEAR_DISTANCE_PER_ROTATION);
+        rightEncoder.setVelocityConversionFactor(Encoders.HIGH_GEAR_DISTANCE_PER_ROTATION / 60);
+        rightEncoder.setPositionConversionFactor(Encoders.HIGH_GEAR_DISTANCE_PER_ROTATION);
 
         for (CANSparkMax motor : left) {
             LEFT.configure(motor);
