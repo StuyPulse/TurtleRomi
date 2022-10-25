@@ -4,6 +4,8 @@
 
 package com.stuypulse.robot;
 
+import static com.stuypulse.robot.Constants.Feedforward.*;
+
 import com.stuypulse.robot.auton.*;
 import com.stuypulse.robot.commands.*;
 import com.stuypulse.robot.subsystems.*;
@@ -23,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Robot robot = new SimRomi();
+  private final Robot robot = new SimRobot(kS, kV, kA);
   private final Gamepad gamepad = new SimKeyGamepad();
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
@@ -46,7 +48,7 @@ public class RobotContainer {
    * button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    
+
   }
 
   private void configureAutons() {

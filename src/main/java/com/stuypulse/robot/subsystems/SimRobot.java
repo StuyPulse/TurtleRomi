@@ -1,5 +1,6 @@
 package com.stuypulse.robot.subsystems;
 
+import static com.stuypulse.robot.Constants.Feedback.*;
 import com.stuypulse.robot.Constants;
 import com.stuypulse.robot.Constants.Constraints;
 import com.stuypulse.stuylib.control.Controller;
@@ -30,19 +31,17 @@ public class SimRomi extends Robot {
 
 	private final Controller leftController, rightController;
 	private SmartNumber leftTargetSpeed, rightTargetSpeed;
-  
-	
+
+
 	private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.TRACK_WIDTH_METERS);
 	private final DifferentialDriveOdometry odometry;
 
 	private final Field2d field;
 
-	public SimRomi() {
+	public SimRomi(double kS, double kV, double kA) {
 		sim = new DifferentialDrivetrainSim(
 			LinearSystemId.identifyDrivetrainSystem(
-				Constants.Feedforward.kV,
-				Constants.Feedforward.kA,
-				10, 5),
+				kV, kA, 10, 5),
 			DCMotor.getRomiBuiltIn(2),
 			1.0,
 			Constants.TRACK_WIDTH_METERS,
@@ -50,12 +49,11 @@ public class SimRomi extends Robot {
 			new Matrix<N7, N1>(Nat.N7(), Nat.N1()));
 
 		// TODO: import statically
-		leftController = new Feedforward.Drivetrain(Constants.Feedforward.kS, Constants.Feedforward.kV, Constants.Feedforward.kA).velocity()
-		//   .add(new PIDController(Constants.Feedback.kP, Constants.Feedback.kI, Constants.Feedback.kD));
-	;
-		rightController = new Feedforward.Drivetrain(Constants.Feedforward.kS, Constants.Feedforward.kV, Constants.Feedforward.kA).velocity()
-		//   .add(new PIDController(Constants.Feedback.kP, Constants.Feedback.kI, Constants.Feedback.kD));
-	;
+		leftController = new Feedforward.Drivetrain(kS, kV, kA).velocity()
+		   .add(new PIDController(kP, kI, kD));
+		rightController = new Feedforward.Drivetrain(kS, kV, kA).velocity()
+		   .add(new PIDController(kP, kI, kD));
+
 		leftTargetSpeed = new SmartNumber("Target Left Vel", 0);
 		rightTargetSpeed = new SmartNumber("Target Right Vel", 0);
 
@@ -72,7 +70,7 @@ public class SimRomi extends Robot {
 	@Override
 	public void drive(double leftMetersPerSecond, double rightMetersPerSecond) {
 		leftTargetSpeed.set(leftMetersPerSecond);
-		rightTargetSpeed.set(rightMetersPerSecond);	
+		rightTargetSpeed.set(rightMetersPerSecond);
 	}
 
 	@Override
@@ -100,7 +98,7 @@ public class SimRomi extends Robot {
 	@Override
 	protected TrajectoryConfig getTrajectoryConfig() {
 		return new TrajectoryConfig(
-       		Constraints.MAX_VEL, 
+       		Constraints.MAX_VEL,
         	Constraints.MAX_ACC
     	).setKinematics(kinematics);
 	}
@@ -112,7 +110,7 @@ public class SimRomi extends Robot {
 	@Override
 	public void periodic() {
 	  odometry.update(getRotation2d(), sim.getLeftPositionMeters(), sim.getRightPositionMeters());
-  
+
 		sim.setInputs(
 			clamp(leftController.update(leftTargetSpeed.get(), sim.getLeftVelocityMetersPerSecond())),
 			clamp(rightController.update(rightTargetSpeed.get(), sim.getRightVelocityMetersPerSecond()))
@@ -127,5 +125,5 @@ public class SimRomi extends Robot {
 		SmartDashboard.putNumber("Left Velocity", sim.getLeftVelocityMetersPerSecond());
 		SmartDashboard.putNumber("Right Velocity", sim.getRightVelocityMetersPerSecond());
 	}
-	
+
 }
