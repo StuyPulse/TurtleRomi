@@ -97,10 +97,6 @@ public class Edwin extends Robot {
         return rightEncoder.getPosition();
     }
 
-    private double getDistance() {
-        return (getLeftDistance() + getRightDistance()) / 2.0;
-    }
-
     // Velocity
     private double getLeftVelocity() {
         return leftEncoder.getVelocity();
@@ -108,10 +104,6 @@ public class Edwin extends Robot {
 
     private double getRightVelocity() {
         return rightEncoder.getVelocity();
-    }
-
-    private double getVelocity() {
-        return (getLeftVelocity() + getRightVelocity()) / 2.0;
     }
 
     /***************
