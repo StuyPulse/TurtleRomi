@@ -181,11 +181,9 @@ public class Edwin extends Robot {
 
         SmartDashboard.putNumber("Edwin/Left Distance", getLeftDistance());
         SmartDashboard.putNumber("Edwin/Right Distance", getRightDistance());
-        SmartDashboard.putNumber("Edwin/Distance", getDistance());
 
         SmartDashboard.putNumber("Edwin/Left Vel", getLeftVelocity());
         SmartDashboard.putNumber("Edwin/Right Vel", getRightVelocity());
-        SmartDashboard.putNumber("Edwin/Velocity", getVelocity());
 
         SmartDashboard.putNumber("Edwin/Pose X", getPose().getX());
         SmartDashboard.putNumber("Edwin/Pose Y", getPose().getY());
