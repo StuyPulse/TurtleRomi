@@ -1,6 +1,6 @@
 package com.stuypulse.robot.commands;
 
-import com.stuypulse.robot.Constants.Constraints;
+import static com.stuypulse.robot.constants.Settings.Romi.Constraints.*;
 import com.stuypulse.robot.subsystems.Robot;
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.feedback.PIDController;
@@ -27,7 +27,7 @@ public class TurnDelta extends CommandBase {
         // it's very funny how it's okay that this is not an angle controller (you don't have a continous system cause when delta > PI)
         controller = new PIDController(1, 0, 0.1)
             .add(new Feedforward.Drivetrain(0.0, 1.0, 0.0).position()) // convert from angle position setpoint to velocity
-            .setSetpointFilter(new MotionProfile(Constraints.MAX_ANGULAR_VEL, Constraints.MAX_ANGULAR_ACC));
+            .setSetpointFilter(new MotionProfile(MAX_ANGULAR_VEL, MAX_ANGULAR_ACC));
         
         this.deltaRad = deltaRad;
 
