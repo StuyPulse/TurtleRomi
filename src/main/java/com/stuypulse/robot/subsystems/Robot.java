@@ -15,8 +15,11 @@ import java.util.List;
 
 import com.stuypulse.robot.commands.FollowPath;
 import com.stuypulse.robot.commands.TurnDelta;
+import com.stuypulse.robot.util.Constraints;
 
 public abstract class Robot extends SubsystemBase {
+
+	public abstract Constraints getConstraints();
 
 	/** KINEMATICS & ODOMETRY */
 

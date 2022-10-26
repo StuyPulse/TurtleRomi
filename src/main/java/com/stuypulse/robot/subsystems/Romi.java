@@ -6,6 +6,9 @@ package com.stuypulse.robot.subsystems;
 
 import static com.stuypulse.robot.constants.Ports.Romi.*;
 import static com.stuypulse.robot.constants.Settings.Romi.Robot.*;
+
+import com.stuypulse.robot.util.Constraints;
+
 import static com.stuypulse.robot.constants.Settings.Romi.Encoder.*;
 import static com.stuypulse.robot.constants.Settings.Romi.Feedback.*;
 import static com.stuypulse.robot.constants.Settings.Romi.Feedforward.*;
@@ -43,6 +46,8 @@ public class Romi extends Robot {
 
   private final RomiGyro gyro = new RomiGyro();
 
+  private final Constraints constraints;
+
   private final Field2d field = new Field2d();
 
   /** Creates a new RomiDrivetrain. */
@@ -68,7 +73,13 @@ public class Romi extends Robot {
 
     odometry = new DifferentialDriveOdometry(getRotation2d());
 
+    constraints = new Constraints(TRACK_WIDTH_METERS, MAX_VEL, MAX_ACC, MAX_ANGULAR_VEL, MAX_ANGULAR_ACC, kinematics);
+
     SmartDashboard.putData(field);
+  }
+
+  public Constraints getConstraints() {
+    return constraints;
   }
 
   @Override

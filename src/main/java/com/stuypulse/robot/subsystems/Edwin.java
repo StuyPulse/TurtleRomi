@@ -2,12 +2,14 @@ package com.stuypulse.robot.subsystems;
 
 import static com.stuypulse.robot.constants.Ports.Edwin.*;
 import static com.stuypulse.robot.constants.Settings.Edwin.*;
+import static com.stuypulse.robot.constants.Settings.Edwin.Motion.*;
 import static com.stuypulse.robot.constants.Motors.Edwin.*;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.stuypulse.robot.util.Constraints;
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.feedback.PIDController;
 import com.stuypulse.stuylib.control.feedforward.Feedforward;
@@ -40,6 +42,8 @@ public class Edwin extends Robot {
     private final DifferentialDriveOdometry odometry;
     private final DifferentialDriveKinematics kinematics;
     private final AHRS navx;
+
+    private final Constraints constraints;
 
     private final Field2d field;
 
@@ -75,6 +79,8 @@ public class Edwin extends Robot {
         kinematics = new DifferentialDriveKinematics(TRACK_WIDTH);
         navx = new AHRS(SPI.Port.kMXP);
 
+        constraints = new Constraints(TRACK_WIDTH, MAX_VELOCITY, MAX_ACCELERATION, MAX_ANGULAR_VELOCITY, MAX_ANGULAR_ACCELERATION, kinematics);
+
         setPose(new Pose2d());
 
         field = new Field2d();
@@ -95,6 +101,10 @@ public class Edwin extends Robot {
         for (CANSparkMax motor : right) {
             RIGHT.configure(motor);
         }
+    }
+
+    public Constraints getConstraints() {
+        return constraints;
     }
 
     /*********************

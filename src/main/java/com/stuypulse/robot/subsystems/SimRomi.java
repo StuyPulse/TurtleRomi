@@ -1,6 +1,9 @@
 package com.stuypulse.robot.subsystems;
 
 import static com.stuypulse.robot.constants.Settings.Romi.Robot.*;
+
+import com.stuypulse.robot.util.Constraints;
+
 import static com.stuypulse.robot.constants.Settings.Romi.Encoder.*;
 import static com.stuypulse.robot.constants.Settings.Romi.Feedback.*;
 import static com.stuypulse.robot.constants.Settings.Romi.Feedforward.*;
@@ -39,6 +42,8 @@ public class SimRomi extends Robot {
 	private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
 	private final DifferentialDriveOdometry odometry;
 
+	private final Constraints constraints;
+
 	private final Field2d field;
 
 	public SimRomi() {
@@ -65,8 +70,14 @@ public class SimRomi extends Robot {
 
 		odometry = new DifferentialDriveOdometry(getRotation2d());
 
+		constraints = new Constraints(TRACK_WIDTH_METERS, MAX_VEL, MAX_ACC, MAX_ANGULAR_VEL, MAX_ANGULAR_ACC, kinematics);
+
 		field = new Field2d();
 		SmartDashboard.putData(field);
+	}
+	
+	public Constraints getConstraints() {
+		return constraints;
 	}
 
 	public Field2d getField2d() {

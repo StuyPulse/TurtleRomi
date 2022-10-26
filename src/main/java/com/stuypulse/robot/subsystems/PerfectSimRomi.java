@@ -1,6 +1,9 @@
 package com.stuypulse.robot.subsystems;
 
 import static com.stuypulse.robot.constants.Settings.Romi.Robot.*;
+
+import com.stuypulse.robot.util.Constraints;
+
 import static com.stuypulse.robot.constants.Settings.Romi.Constraints.*;
 
 import com.stuypulse.stuylib.network.SmartNumber;
@@ -21,6 +24,8 @@ public class PerfectSimRomi extends Robot {
     private final DifferentialDriveOdometry odometry;
     private final DifferentialDriveKinematics kinematics;
 
+    private final Constraints constraints;
+
     private final Field2d field;
 
     public PerfectSimRomi() {
@@ -33,8 +38,14 @@ public class PerfectSimRomi extends Robot {
         odometry = new DifferentialDriveOdometry(new Rotation2d());
         kinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
 
+        constraints = new Constraints(TRACK_WIDTH_METERS, MAX_VEL, MAX_ACC, MAX_ANGULAR_VEL, MAX_ANGULAR_ACC, kinematics);
+
         field = new Field2d();
         SmartDashboard.putData("Field", field);
+    }
+
+    public Constraints getConstraints() {
+        return constraints;
     }
 
     @Override
