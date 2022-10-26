@@ -4,6 +4,7 @@
 
 package com.stuypulse.robot;
 
+import com.stuypulse.robot.Constants.Constraints;
 import com.stuypulse.robot.auton.*;
 import com.stuypulse.robot.commands.*;
 import com.stuypulse.robot.subsystems.*;
@@ -23,14 +24,14 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Robot robot = new SimRomi();
+  private final Robot robot = new Romi();
   private final Gamepad gamepad = new SimKeyGamepad();
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     robot.setDefaultCommand(new RunCommand(() -> {
-      robot.drive(gamepad.getLeftY(), gamepad.getRightY());
+      robot.arcadeDrive(gamepad.getLeftY(), gamepad.getRightX() * Constraints.MAX_ANGULAR_VEL);
     }, robot));
 
     // Configure the button bindings
