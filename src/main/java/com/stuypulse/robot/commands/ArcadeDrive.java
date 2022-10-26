@@ -28,7 +28,7 @@ public class ArcadeDrive extends CommandBase {
         angle = IStream.create(() -> gamepad.getLeftX()).filtered(
                                 x -> SLMath.deadband(x, ANGLE_DEADBAND.get()),
                                 x -> SLMath.spow(x, ANGLE_POWER.get()),
-                                x -> x * MAX_VELOCITY,
+                                x -> x * MAX_ANGULAR_VELOCITY,
                                 new LowPassFilter(ANGLE_FILTER));
 
         addRequirements(robot);
