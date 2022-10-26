@@ -4,7 +4,7 @@
 
 package com.stuypulse.robot;
 
-import com.stuypulse.robot.Constants.Constraints;
+import com.stuypulse.robot.constants.Settings.Romi.Constraints;
 import com.stuypulse.robot.auton.*;
 import com.stuypulse.robot.commands.*;
 import com.stuypulse.robot.subsystems.*;
