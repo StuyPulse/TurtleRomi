@@ -1,6 +1,8 @@
 package com.stuypulse.robot.subsystems;
 
-import com.stuypulse.robot.Constants;
+import static com.stuypulse.robot.constants.Settings.Romi.Robot.*;
+import static com.stuypulse.robot.constants.Settings.Romi.Constraints.*;
+
 import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,7 +31,7 @@ public class PerfectSimRomi extends Robot {
         rightDistance = 0.0;
 
         odometry = new DifferentialDriveOdometry(new Rotation2d());
-        kinematics = new DifferentialDriveKinematics(Constants.TRACK_WIDTH_METERS);
+        kinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
 
         field = new Field2d();
         SmartDashboard.putData("Field", field);
@@ -50,7 +52,7 @@ public class PerfectSimRomi extends Robot {
 
     @Override
     public Rotation2d getRotation2d() {
-        return new Rotation2d((rightDistance - leftDistance)/Constants.TRACK_WIDTH_METERS);
+        return new Rotation2d((rightDistance - leftDistance)/TRACK_WIDTH_METERS);
     }
 
     @Override
@@ -61,8 +63,8 @@ public class PerfectSimRomi extends Robot {
     @Override
     protected TrajectoryConfig getTrajectoryConfig() {
         return new TrajectoryConfig(
-            Constants.Constraints.MAX_VEL, 
-            Constants.Constraints.MAX_ACC
+            MAX_VEL, 
+            MAX_ACC
         ).setKinematics(kinematics);
     }
 

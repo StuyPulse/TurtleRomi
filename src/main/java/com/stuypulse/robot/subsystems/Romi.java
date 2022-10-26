@@ -4,9 +4,13 @@
 
 package com.stuypulse.robot.subsystems;
 
-import com.stuypulse.robot.Constants;
-import com.stuypulse.robot.Constants.Constraints;
-import com.stuypulse.robot.Constants.Ports;
+import static com.stuypulse.robot.constants.Ports.Romi.*;
+import static com.stuypulse.robot.constants.Settings.Romi.Robot.*;
+import static com.stuypulse.robot.constants.Settings.Romi.Encoder.*;
+import static com.stuypulse.robot.constants.Settings.Romi.Feedback.*;
+import static com.stuypulse.robot.constants.Settings.Romi.Feedforward.*;
+import static com.stuypulse.robot.constants.Settings.Romi.Constraints.*;
+
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.feedback.PIDController;
 import com.stuypulse.stuylib.control.feedforward.Feedforward;
@@ -24,18 +28,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Romi extends Robot {
 
-  private final Spark leftMotor = new Spark(Ports.LEFT_MOTOR);
-  private final Spark rightMotor = new Spark(Ports.RIGHT_MOTOR);
+  private final Spark leftMotor = new Spark(LEFT_MOTOR);
+  private final Spark rightMotor = new Spark(RIGHT_MOTOR);
 
   private final Controller leftController, rightController;
   private double leftTargetSpeed, rightTargetSpeed;
 
 
-  private final Encoder leftEncoder = new Encoder(Ports.LEFT_ENCODER_A, Ports.LEFT_ENCODER_B);
-  private final Encoder rightEncoder = new Encoder(Ports.RIGHT_ENCODER_A, Ports.RIGHT_ENCODER_B);
+  private final Encoder leftEncoder = new Encoder(LEFT_ENCODER_A, LEFT_ENCODER_B);
+  private final Encoder rightEncoder = new Encoder(RIGHT_ENCODER_A, RIGHT_ENCODER_B);
 
   private final DifferentialDriveOdometry odometry;
-  private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.TRACK_WIDTH_METERS);
+  private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
 
   private final RomiGyro gyro = new RomiGyro();
 
@@ -44,17 +48,17 @@ public class Romi extends Robot {
   /** Creates a new RomiDrivetrain. */
   public Romi() {
     // Use meters as unit for encoder distances
-    leftEncoder.setDistancePerPulse(Constants.Encoder.DISTANCE_PER_PULSE);
-    rightEncoder.setDistancePerPulse(Constants.Encoder.DISTANCE_PER_PULSE);
+    leftEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
+    rightEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
     leftEncoder.reset();
     rightEncoder.reset();
 
     // TODO: import statically
-    leftController = new Feedforward.Drivetrain(Constants.Feedforward.kS, Constants.Feedforward.kV, Constants.Feedforward.kA).velocity()
-      .add(new PIDController(Constants.Feedback.kP, Constants.Feedback.kI, Constants.Feedback.kD));
+    leftController = new Feedforward.Drivetrain(kS, kV, kA).velocity()
+      .add(new PIDController(kP, kI, kD));
 
-    rightController = new Feedforward.Drivetrain(Constants.Feedforward.kS, Constants.Feedforward.kV, Constants.Feedforward.kA).velocity()
-      .add(new PIDController(Constants.Feedback.kP, Constants.Feedback.kI, Constants.Feedback.kD));
+    rightController = new Feedforward.Drivetrain(kS, kV, kA).velocity()
+      .add(new PIDController(kP, kI, kD));
 
     leftTargetSpeed = 0;
     rightTargetSpeed = 0;
@@ -92,7 +96,7 @@ public class Romi extends Robot {
 
   @Override
   public Rotation2d getRotation2d() {
-    return new Rotation2d((rightEncoder.getDistance() - leftEncoder.getDistance()) / Constants.TRACK_WIDTH_METERS);
+    return new Rotation2d((rightEncoder.getDistance() - leftEncoder.getDistance()) / TRACK_WIDTH_METERS);
   }
 
   @Override
@@ -103,8 +107,8 @@ public class Romi extends Robot {
   @Override
   public TrajectoryConfig getTrajectoryConfig() {
     return new TrajectoryConfig(
-        Constraints.MAX_VEL, 
-        Constraints.MAX_ACC
+        MAX_VEL, 
+        MAX_ACC
     ).setKinematics(kinematics);
   }
 
