@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,9 +29,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    robot.setDefaultCommand(new RunCommand(() -> {
-      robot.arcadeDrive(gamepad.getLeftY(), gamepad.getRightX() * Constraints.MAX_ANGULAR_VEL);
-    }, robot));
+    robot.setDefaultCommand(new ArcadeDrive(robot, gamepad));
 
     // Configure the button bindings
     configureButtonBindings();
