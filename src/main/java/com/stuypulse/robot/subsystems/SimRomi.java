@@ -1,7 +1,11 @@
 package com.stuypulse.robot.subsystems;
 
-import com.stuypulse.robot.Constants;
-import com.stuypulse.robot.Constants.Constraints;
+import static com.stuypulse.robot.constants.Settings.Romi.Robot.*;
+import static com.stuypulse.robot.constants.Settings.Romi.Encoder.*;
+import static com.stuypulse.robot.constants.Settings.Romi.Feedback.*;
+import static com.stuypulse.robot.constants.Settings.Romi.Feedforward.*;
+import static com.stuypulse.robot.constants.Settings.Romi.Constraints.*;
+
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.feedback.PIDController;
 import com.stuypulse.stuylib.control.feedforward.Feedforward;
@@ -32,7 +36,7 @@ public class SimRomi extends Robot {
 	private SmartNumber leftTargetSpeed, rightTargetSpeed;
   
 	
-	private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.TRACK_WIDTH_METERS);
+	private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
 	private final DifferentialDriveOdometry odometry;
 
 	private final Field2d field;
@@ -40,21 +44,21 @@ public class SimRomi extends Robot {
 	public SimRomi() {
 		sim = new DifferentialDrivetrainSim(
 			LinearSystemId.identifyDrivetrainSystem(
-				Constants.Feedforward.kV,
-				Constants.Feedforward.kA,
+				kV,
+				kA,
 				10, 5),
 			DCMotor.getRomiBuiltIn(2),
 			1.0,
-			Constants.TRACK_WIDTH_METERS,
-			Constants.WHEEL_DIAMETER_METERS / 2,
+			TRACK_WIDTH_METERS,
+			WHEEL_DIAMETER_METERS / 2,
 			new Matrix<N7, N1>(Nat.N7(), Nat.N1()));
 
 		// TODO: import statically
-		leftController = new Feedforward.Drivetrain(Constants.Feedforward.kS, Constants.Feedforward.kV, Constants.Feedforward.kA).velocity()
-		//   .add(new PIDController(Constants.Feedback.kP, Constants.Feedback.kI, Constants.Feedback.kD));
+		leftController = new Feedforward.Drivetrain(kS, kV, kA).velocity()
+		//   .add(new PIDController(kP, kI, kD));
 	;
-		rightController = new Feedforward.Drivetrain(Constants.Feedforward.kS, Constants.Feedforward.kV, Constants.Feedforward.kA).velocity()
-		//   .add(new PIDController(Constants.Feedback.kP, Constants.Feedback.kI, Constants.Feedback.kD));
+		rightController = new Feedforward.Drivetrain(kS, kV, kA).velocity()
+		//   .add(new PIDController(kP, kI, kD));
 	;
 		leftTargetSpeed = new SmartNumber("Target Left Vel", 0);
 		rightTargetSpeed = new SmartNumber("Target Right Vel", 0);
@@ -100,8 +104,8 @@ public class SimRomi extends Robot {
 	@Override
 	protected TrajectoryConfig getTrajectoryConfig() {
 		return new TrajectoryConfig(
-       		Constraints.MAX_VEL, 
-        	Constraints.MAX_ACC
+       		MAX_VEL, 
+        	MAX_ACC
     	).setKinematics(kinematics);
 	}
 
