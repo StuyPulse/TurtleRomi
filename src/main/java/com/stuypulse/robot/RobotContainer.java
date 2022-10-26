@@ -29,7 +29,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    robot.setDefaultCommand(new ArcadeDrive(robot, gamepad, robot.getConstraints()));
+    robot.setDefaultCommand(new ArcadeDrive(robot, gamepad));
 
     // Configure the button bindings
     configureButtonBindings();
