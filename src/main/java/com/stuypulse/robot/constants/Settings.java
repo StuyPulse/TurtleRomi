@@ -63,6 +63,9 @@ public interface Settings {
             double MAX_VELOCITY = 1.0;
             double MAX_ACCELERATION = 1.0;
 
+            double MAX_ANGULAR_VELOCITY = (MAX_VELOCITY * 2) / TRACK_WIDTH;
+            double MAX_ANGULAR_ACCELERATION = (Math.pow(MAX_ACCELERATION, 2)) / (TRACK_WIDTH / 2);
+
             public interface Feedforward {
                 double kS = 0.367; 
                 double kV = 2.07; 

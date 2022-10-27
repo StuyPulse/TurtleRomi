@@ -4,6 +4,7 @@
 
 package com.stuypulse.robot;
 
+import com.stuypulse.robot.constants.Settings.Romi.Constraints;
 import com.stuypulse.robot.auton.*;
 import com.stuypulse.robot.commands.*;
 import com.stuypulse.robot.subsystems.*;
@@ -14,7 +15,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,15 +23,13 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Robot robot = new SimRomi();
+  private final Robot robot = new Romi();
   private final Gamepad gamepad = new SimKeyGamepad();
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    robot.setDefaultCommand(new RunCommand(() -> {
-      robot.drive(gamepad.getLeftY(), gamepad.getRightY());
-    }, robot));
+    robot.setDefaultCommand(new ArcadeDrive(robot, gamepad));
 
     // Configure the button bindings
     configureButtonBindings();
