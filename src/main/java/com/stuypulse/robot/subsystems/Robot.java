@@ -47,7 +47,7 @@ public abstract class Robot extends SubsystemBase {
 
 	/** AUTONOMOUS CONTROL */
 
-	public final Command fd(double distance) {
+	public final Command forward(double distance) {
 		return new FollowPath(this,
 			TrajectoryGenerator.generateTrajectory(
 				new Pose2d(0, 0, new Rotation2d(0)),
@@ -56,7 +56,7 @@ public abstract class Robot extends SubsystemBase {
 				getTrajectoryConfig()));
 	}
 
-	public final Command bk(double distance) {
+	public final Command back(double distance) {
 		return new FollowPath(this,
 			TrajectoryGenerator.generateTrajectory(
 				new Pose2d(0, 0, new Rotation2d(0)),
@@ -65,11 +65,11 @@ public abstract class Robot extends SubsystemBase {
 				getTrajectoryConfig().setReversed(true)));
 	}
 
-	public final Command rt(double degrees) {
+	public final Command right(double degrees) {
 		return new TurnDelta(this, Math.toRadians(-degrees));
 	}
 
-	public final Command lt(double degrees) {
+	public final Command left(double degrees) {
 		return new TurnDelta(this, Math.toRadians(+degrees));
 	}
 

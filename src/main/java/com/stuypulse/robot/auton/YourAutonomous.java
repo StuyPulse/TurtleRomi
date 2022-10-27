@@ -8,14 +8,14 @@ public class YourAutonomous extends SequentialCommandGroup {
 
             // Create a square
 
-            robot.fd(4), 
-            robot.rt(90), 
-            robot.bk(4), 
-            robot.rt(90), 
-            robot.fd(4), 
-            robot.lt(90),
-            robot.fd(4),
-            robot.lt(90)
+            robot.forward(4), 
+            robot.right(90), 
+            robot.back(4), 
+            robot.right(90), 
+            robot.forward(4), 
+            robot.left(90),
+            robot.forward(4),
+            robot.left(90)
         );
     }
 }

@@ -50,7 +50,7 @@ public class RobotContainer {
   private void configureAutons() {
     autonChooser.setDefaultOption("Your Autonomous", new YourAutonomous(robot));
     autonChooser.addOption("Straight", new RunStraight(robot));
-    autonChooser.addOption("Straight Path", robot.fd(10));
+    autonChooser.addOption("Straight Path", robot.forward(10));
 
     SmartDashboard.putData("Auton Chooser", autonChooser);
   }
