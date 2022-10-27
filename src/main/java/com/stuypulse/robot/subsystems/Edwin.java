@@ -38,10 +38,11 @@ public class Edwin extends Robot {
     private SmartNumber leftTargetSpeed, rightTargetSpeed;
 
     private final Solenoid gearShift;
+    
+    private final AHRS navx;
 
     private final DifferentialDriveOdometry odometry;
     private final DifferentialDriveKinematics kinematics;
-    private final AHRS navx;
 
     private final Constraints constraints;
 
@@ -75,9 +76,10 @@ public class Edwin extends Robot {
         gearShift = new Solenoid(PneumaticsModuleType.CTREPCM, GEAR_SHIFT);
         gearShift.set(true);
 
+        navx = new AHRS(SPI.Port.kMXP);
+
         odometry = new DifferentialDriveOdometry(getRotation2d());
         kinematics = new DifferentialDriveKinematics(TRACK_WIDTH);
-        navx = new AHRS(SPI.Port.kMXP);
 
         constraints = new Constraints(TRACK_WIDTH, MAX_VELOCITY, MAX_ACCELERATION, MAX_ANGULAR_VELOCITY, MAX_ANGULAR_ACCELERATION, kinematics);
 
