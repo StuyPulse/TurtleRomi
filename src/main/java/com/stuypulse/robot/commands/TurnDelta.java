@@ -9,6 +9,7 @@ import com.stuypulse.stuylib.streams.booleans.BStream;
 import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
 import com.stuypulse.stuylib.streams.filters.MotionProfile;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class TurnDelta extends CommandBase {
@@ -25,7 +26,7 @@ public class TurnDelta extends CommandBase {
         this.robot = robot;
 
         // it's very funny how it's okay that this is not an angle controller (you don't have a continous system cause when delta > PI)
-        controller = new PIDController(1, 0, 0.1)
+        controller = new PIDController(1.2, 0, 0.1)
             .add(new Feedforward.Drivetrain(0.0, 1.0, 0.0).position()) // convert from angle position setpoint to velocity
             .setSetpointFilter(new MotionProfile(MAX_ANGULAR_VEL, MAX_ANGULAR_ACC));
         
@@ -33,7 +34,7 @@ public class TurnDelta extends CommandBase {
 
         isDone = BStream.create(() -> true)
             .and(() -> controller.isDone(Math.toRadians(1.0)))
-            .filtered(new BDebounce.Rising(0.5));
+            .filtered(new BDebounce.Rising(0.25));
 
         addRequirements(robot);
     }
@@ -45,6 +46,8 @@ public class TurnDelta extends CommandBase {
 
     @Override
     public void execute() {
+        SmartDashboard.putNumber("Turn/Target", targetRad);
+        SmartDashboard.putNumber("Turn/Rads", robot.getRotation2d().getRadians());
         robot.turn(controller.update(targetRad, robot.getRotation2d().getRadians()));
     }
 
