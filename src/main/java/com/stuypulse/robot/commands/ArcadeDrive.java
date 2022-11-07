@@ -34,7 +34,7 @@ public class ArcadeDrive extends CommandBase {
     }
 
     public void execute() {
-        robot.arcadeDrive(speed.get(), angle.get());
+        robot.arcadeDrive(speed.get(), -angle.get());
     }
 
     public boolean isFinished() {

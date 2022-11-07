@@ -36,7 +36,7 @@ public abstract class Robot extends SubsystemBase {
 	public abstract void drive(double leftMetersPerSecond, double rightMetersPerSecond);
 	
 	public final void arcadeDrive(double velocityMetersPerSecond, double omega) {
-		var wheelSpeeds = getKinematics().toWheelSpeeds(new ChassisSpeeds(velocityMetersPerSecond, 0, -omega));
+		var wheelSpeeds = getKinematics().toWheelSpeeds(new ChassisSpeeds(velocityMetersPerSecond, 0, omega));
 		drive(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
 	}
 	
