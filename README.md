@@ -22,3 +22,8 @@ When running the code with the above example, I expect the Romi to go forward 3.
 |robot.back(x)|Move Romi backward by x feet.|
 |robot.right(x)|Turn Romi clockwise by x degrees.       |
 |robot.left(x)|Turn Romi counter clockwise by x degrees.|
+
+### Challenge
+Use the Commands in the table above to navigate the robot through the following obstacles: </br>
+<img src="images/obstacles.jpg" alt="obstacles" height="450" width="350"/>
+
